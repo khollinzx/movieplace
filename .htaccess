@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteRule ^login/$ ./login.php
+RewriteRule ^logout/$ ./logout.php
+RewriteRule ^signup/$ ./signup.php
+RewriteRule ^view-movie/$ ./view-movie.php
