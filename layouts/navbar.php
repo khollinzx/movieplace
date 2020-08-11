@@ -7,8 +7,12 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <?php if (isset($_SESSION["admin_details"]) && $_SESSION["admin_details"] != null) { ?>
             <ul class="navbar-nav mr-auto ">
-                <li class="nav-item <?php if($pageLink == "dashboard"){ echo "btn btn-outline-dark btn-sm"; } ?>"><a class="nav-link" href="<?php echo BASE_URL ?>admin/portal/?pg=dashboard"> Dashboard </a> </li>
-                <li class="nav-item <?php if($pageLink == "report"){ echo "btn btn-outline-dark btn-sm"; } ?>"><a class="nav-link" href="<?php echo BASE_URL ?>admin/portal/?pg=report"> Report </a> </li>
+                <li class="nav-item <?php if ($pageLink == "dashboard") {
+                                        echo "btn btn-outline-dark btn-sm";
+                                    } ?>"><a class="nav-link" href="<?php echo BASE_URL ?>admin/portal/?pg=dashboard"> Dashboard </a> </li>
+                <li class="nav-item <?php if ($pageLink == "report") {
+                                        echo "btn btn-outline-dark btn-sm";
+                                    } ?>"><a class="nav-link" href="<?php echo BASE_URL ?>admin/portal/?pg=report"> Report </a> </li>
             </ul>
         <?php } ?>
         <ul class="navbar-nav mr-auto ">
@@ -38,9 +42,9 @@
                             <?php echo $_SESSION["admin_details"]->email; ?>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="<?php echo BASE_URL ?>user/?pg=add-genre"> Add Genre</a>
-                            <a class="dropdown-item" href="<?php echo BASE_URL ?>user/?pg=add-movie"> Add Movie</a>
-                            <a class="dropdown-item" href="<?php echo BASE_URL ?>user/?pg=view-customers"> View Customers</a>
+                            <a class="dropdown-item" href="<?php echo BASE_URL ?>admin/portal/?pg=dashboard"> Add Genre</a>
+                            <a class=" dropdown-item" href="<?php echo BASE_URL ?>admin/portal/?pg=dashboard"> Add Movie</a>
+                            <a class="dropdown-item" href="<?php echo BASE_URL ?>admin/portal/?pg=report"> View Customers</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" id="logout" href="<?php echo BASE_URL ?>logout/">Logout</a>
                         </div>

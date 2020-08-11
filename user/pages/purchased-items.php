@@ -11,10 +11,10 @@ $i = 1;
                     <table class="table">
                         <thead>
                             <tr>
-                                <td>SN</td>
-                                <td>Movie Title</td>
-                                <td>Price</td>
-                                <td>Date</td>
+                                <th>SN</th>
+                                <th>Movie Title</th>
+                                <th>Price</th>
+                                <th>Date</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -26,8 +26,8 @@ $i = 1;
                                     <td><?php echo $item["trans_date"]; ?></td>
                                 </tr>
 
-                            <?php }
-                            $i++ ?>
+                            <?php $i++;
+                            } ?>
                         </tbody>
                     </table>
                 </div>

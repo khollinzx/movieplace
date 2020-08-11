@@ -20,7 +20,11 @@ $(document).ready(function () {
         );
     }
 
-
+    function error_alert3(value, type) {
+        $('#error3').html(
+            `<div class="alert alert-${type}" role="alert"><strong><i class="fas fa-warning"></i></strong>&ensp;${value}</div>`
+        );
+    }
 
     $('#saveGenre').click(function (e) {
         if ($('#genre').val() == '') {
@@ -62,6 +66,7 @@ $(document).ready(function () {
             if (codeNo == "200") {
                 $('#saveGenre').html('Saving Change...');
                 $('#saveGenre').attr('disabled', false);
+                $("#genreDetails")[0].reset();
                 $(".modal").modal('hide');
                 getGenre();
                 Swal.fire({
@@ -71,6 +76,8 @@ $(document).ready(function () {
                     showConfirmButton: false,
                     timer: 2500,
                 });
+
+                window.location.href = "?pg=dashboard";
 
             } else if (codeNo == "400") {
                 $('#saveGenre').html('Save Changes');
@@ -86,7 +93,7 @@ $(document).ready(function () {
 
     function getGenre() {
         $.ajax({
-            url: '../../services/Controllers/GetGenreController.php',
+            url: '../../services/controllers/GetGenreController.php',
             type: 'GET',
             data: 'getGenres',
             dataType: 'json',
@@ -184,6 +191,7 @@ $(document).ready(function () {
             if (codeNo == "200") {
                 $('#saveProduct').html('Save Product');
                 $('#saveProduct').attr('disabled', false);
+                $("#addProductDetails")[0].reset();
                 $(".modal").modal('hide');
                 getMovies();
                 getGenre();
@@ -194,6 +202,8 @@ $(document).ready(function () {
                     showConfirmButton: false,
                     timer: 1500
                 });
+
+
 
             } else if (codeNo == "400") {
                 $('#saveProduct').html('Save Product');
@@ -210,7 +220,7 @@ $(document).ready(function () {
 
     function getMovies() {
         $.ajax({
-            url: '../../services/Controllers/GetMovieController.php',
+            url: '../../services/controllers/GetMovieController.php',
             type: 'GET',
             data: 'getMovies',
             dataType: 'json'
@@ -235,13 +245,15 @@ $(document).ready(function () {
         $.each(data, function (key, value) {
             row += `<tr>`;
             row += `<td>${value.index}</td>`;
+            row += `<td><img src="../../uploads/photos/${value.photo}" alt="${value.photo}" class="img-thumbnail" style="max-width: 50px;"></td>`;
             row += `<td>${value.name}</td>`;
-            row += `<td><span>&#8358;</span>${value.price}</span></td>`;
+            row += `<td hidden>${value.description}</td>`;
+            row += `<td>${value.price}</span></td>`;
             row += `<td><span class="badge badge-success"> ${value.genre}</span></td>`;
             row += `<td data-id=${value.id}>
-                        <button class="btn btn-primary view"><i class="fas fa-eye"></i></button>
-                        <button class="btn btn-warning edit"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-danger delete"><i class="fas fa-trash"></i></button>
+                            <button class="btn btn-primary btn-sm view" data-toggle="modal" data-target="#view_movie"><i class="fas fa-eye"></i></button>
+                            <button class="btn btn-warning btn-sm edit" data-toggle="modal" data-target="#edit_movie"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-danger btn-sm delete"><i class="fas fa-trash"></i></button>
                     </td>`;
             row += `</tr>`;
         });
@@ -249,6 +261,167 @@ $(document).ready(function () {
 
         $("#movie_list").html(row);
     }
+
+    $("body").on("click", ".delete", function () {
+        var movie_id = $(this).parent("td").data('id');
+        deleteMovieFromList(movie_id);
+    });
+
+    function deleteMovieFromList(movie_id) {
+        var accessToken = localStorage.getItem("token");
+        var movie_id = movie_id;
+        $.ajax({
+            type: 'POST',
+            url: '../../services/controllers/DeleteMovieFromListController.php',
+            data: {
+                movie_id: movie_id
+            },
+            headers: {
+                Authorization: accessToken
+            },
+            dataType: 'json',
+            success: function (response) {
+                deleteMovieProcess(response.value);
+            },
+        });
+    }
+
+    function deleteMovieProcess(data) {
+        var codeNo = '';
+        var msgs = '';
+        $.each(data, function (key, item) {
+            codeNo = item.code;
+            msgs = item.msgs;
+        });
+        if (codeNo == "200") {
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: msgs,
+                showConfirmButton: false,
+                timer: 2500,
+            });
+            window.location.href = "?pg=dashboard"
+
+        } else if (codeNo == "404") {
+            alert(msgs);
+        }
+    }
+
+    $("body").on("click", ".edit", function () {
+        var edit_movie_id = $(this).parent("td").data('id');
+        var movie_description = $(this).parent("td").prev("td").prev("td").prev("td").text();
+        var price = $(this).parent("td").prev("td").prev("td").text();
+        var movie_name = $(this).parent("td").prev("td").prev("td").prev("td").prev("td").text()
+        var price_convert = parseInt(price);
+        $("#edit_movie").find("input[name='edit_movie_id']").val(edit_movie_id);
+        $("#edit_movie").find("input[name='edit_name']").val(movie_name);
+        $("#edit_movie").find("input[name='edit_price']").val(price_convert);
+        $("#edit_movie").find("textarea[name='edit_movie_description']").val(movie_description);
+    });
+
+    $("body").on("click", ".view", function () {
+        var movie_description = $(this).parent("td").prev("td").prev("td").prev("td").text();
+        var genre = $(this).parent("td").prev("td").text();
+        var price = $(this).parent("td").prev("td").prev("td").text();
+        var movie_name = $(this).parent("td").prev("td").prev("td").prev("td").prev("td").text()
+        var photo = $(this).parent("td").prev("td").prev("td").prev("td").prev("td").prev("td").html()
+
+        $("#view_movie").find("h4[id='view_productTitle']").html(movie_name);
+        $("#view_movie").find("h4[id='view_genre_type']").html(genre);
+        $("#view_movie").find("h4[id='view_price']").html(price);
+        $("#view_movie").find("p[id='view_description']").html(movie_description);
+        $("#view_movie").find("div[id='view_photo']").html(photo);
+    });
+
+    $('#updateProduct').on("click", function () {
+        if (
+            $('#edit_name').val() == '' || $('#edit_price').val() == '' || $('#edit_movie_description').val() == '' || $('#edit_genre_type').val() == '' || $('#edit_photo').val() == ''
+        ) {
+            if ($('#edit_name').val() == '') {
+                error_alert3('Movie Title is Required', 'warning');
+            } else if ($('#edit_price').val() == '') {
+                error_alert3('Price is Required', 'warning');
+            } else if ($('#edit_movie_description').val() == '') {
+                error_alert3('Description is Required', 'warning');
+            } else if ($('#edit_genre_type').val() == '') {
+                error_alert3('Select a Genre', 'warning');
+            } else if ($('#edit_photo').val() == '') {
+                error_alert3('Photo is Required', 'warning');
+            }
+        } else {
+            updateProduct();
+        }
+
+        function updateProduct() {
+            var edit_movie_id = $("#edit_movie_id").val();
+            var edit_name = $("#edit_name").val();
+            var edit_price = $("#edit_price").val();
+            var edit_movie_description = $("#edit_movie_description").val();
+            var edit_genre_type = $("#edit_genre_type").val();
+            var edit_photo = $("#edit_photo").prop("files")[0];
+            var form_data = new FormData();
+            form_data.append("edit_movie_id", edit_movie_id);
+            form_data.append("edit_name", edit_name);
+            form_data.append("edit_price", edit_price);
+            form_data.append("edit_movie_description", edit_movie_description);
+            form_data.append("edit_genre_type", edit_genre_type);
+            form_data.append("edit_photo", edit_photo);
+            var accessToken = localStorage.getItem('token');
+            $.ajax({
+                type: 'POST',
+                url: '../../services/controllers/UpdateMovieProductController.php',
+                data: form_data,
+                dataType: 'json',
+                headers: {
+                    Authorization: accessToken,
+                    Content_type: "Application/json"
+                },
+                contentType: false,
+                cache: false,
+                processData: false,
+                beforeSend: function () {
+                    $('#updateProduct').html('Saving Product....');
+                    $('#updateProduct').attr('disabled', true);
+                },
+                success: function (response) {
+                    updateProductProduct(response.value);
+                },
+            }); // createFolder Ajax Ends
+        } // ends createFolder function
+
+        function updateProductProduct(data) {
+            var codeNo = '';
+            var msgs = '';
+            $.each(data, function (key, item) {
+                codeNo = item.code;
+                msgs = item.msgs;
+            });
+            if (codeNo == "200") {
+                $('#updateProduct').html('Update Product');
+                $('#updateProduct').attr('disabled', false);
+                $(".modal").modal('hide');
+                getMovies();
+                getGenre();
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Movie Product Updated',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+            } else if (codeNo == "400") {
+                $('#updateProduct').html('Update Product');
+                $('#updateProduct').attr('disabled', false);
+                error_alert3(msgs, "danger");
+            } else if (codeNo == "404") {
+                $('#updateProduct').html('Update Product');
+                $('#updateProduct').attr('disabled', false);
+                error_alert3(msgs, "danger");
+            }
+        }
+    });
 
 
 });

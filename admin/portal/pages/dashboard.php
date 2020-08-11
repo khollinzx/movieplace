@@ -2,23 +2,24 @@
 $genres = select_all("genre_table");
 ?>
 <div class="container">
-    <h3>Cart</h3>
+    <h3>Movies Table</h3>
     <div class="row">
         <div class="col-md-8">
             <div class="card mb-3">
                 <div class="card-body">
-                    <div class="py-3">
+                    <div class="py-4">
                         <button class="btn btn-outline-primary" data-toggle="modal" data-target="#addGenre">Add Genre</button>
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#addProduct">Add Product</button>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#addProduct">Add Movie</button>
                     </div>
                     <table class="table">
                         <thead>
                             <tr>
-                                <td>SN</td>
-                                <td>Movie Title</td>
-                                <td>Price</td>
-                                <td>Genre</td>
-                                <td>Action</td>
+                                <th>SN</th>
+                                <th>Movie Photo</th>
+                                <th>Movie Title</th>
+                                <th>Price</th>
+                                <th>Genre</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="movie_list">

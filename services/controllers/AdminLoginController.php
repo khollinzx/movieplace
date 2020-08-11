@@ -2,6 +2,7 @@
 ini_set('display_errors', 1);
 require_once("../../starter/header.php");
 
+// 
 unset($_SESSION['user_details']);
 unset($_SESSION['admin_details']);
 

@@ -2,7 +2,8 @@
 ini_set('display_errors', 1);
 require_once("../../starter/header.php");
 
-session_destroy();
+unset($_SESSION['user_details']);
+unset($_SESSION['admin_details']);
 
 require ROOT_PATH . "vendor/autoload.php";
 

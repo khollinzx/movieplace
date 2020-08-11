@@ -10,7 +10,7 @@ header('Content-Type: application/json');
 
 $headers = apache_request_headers();
 
-$token = $headers['x_auth_token'];
+$token = $headers['Authorization'];
 
 if (isset($_POST["movie_id"])) {
     $movie_id = $_POST["movie_id"];

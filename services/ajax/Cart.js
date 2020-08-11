@@ -81,7 +81,7 @@ $(document).ready(function () {
 
     function getUserMovieList() {
         $.ajax({
-            url: '../services/Controllers/ListProductFromCart.php',
+            url: '../services/controllers/ListProductFromCart.php',
             type: 'GET',
             data: 'getUserMovieList',
             dataType: 'json'
@@ -146,7 +146,7 @@ $(document).ready(function () {
                             reference: reference,
                         },
                         headers: {
-                            x_auth_token: accessToken
+                            Authorization: accessToken
                         },
                         dataType: 'json',
                         success: function (response) {

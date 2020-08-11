@@ -13,6 +13,7 @@ if (isset($_GET["movie"])) {
 $single_movie = select_all_value("movies_table", "*", "token_id", $movie_code);
 
 foreach ($single_movie as $value) {
+    $movie_id = $value["id"];
     $movie_title = $value["movie_title"];
     $movie_photo = $value["photo"];
     $movie_price = $value["price"];
@@ -38,10 +39,10 @@ foreach ($single_movie as $value) {
                         <p class="card-text"><?php echo $movie_description; ?></p>
                         <h4 class="card-text"><small class="text-muted"><span>&#8358;</span> <?php echo $movie_price; ?></small></h4>
 
-                        <div class=" text-right mr-auto">
+                        <div class=" text-right mr-auto" data-id="<?php echo $movie_id ?>">
                             <?php if (isset($_SESSION["user_details"]) && $_SESSION["user_details"] != null) { ?>
-                                <a href="<?php echo BASE_URL ?>user/?pg=cart" class="btn btn-primary clearfix"><i class="fa fa-money"></i> Purchase Movie</a>
-                            <?php } else { ?>
+                                <button id="move_to_cart" class="btn btn-primary clearfix"><i class="fa fa-money"></i> Purchase Movie</button>
+                            <?php } else if (!isset($_SESSION["user_details"]) && $_SESSION["user_details"] == null) { ?>
                                 <a href="<?php echo BASE_URL ?>login/" class="btn btn-outline-primary clearfix"><i class="fa fa-money"></i> Login to Purchase Movie</a>
                             <?php } ?>
                         </div>
@@ -51,6 +52,7 @@ foreach ($single_movie as $value) {
         </div>
     </div>
 </div>
+<script src="<?php echo BASE_URL; ?>services/ajax/ViewMovie.js"></script>
 <?php
 
 include(ROOT_PATH . 'layouts/footer.php');

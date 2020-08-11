@@ -72,6 +72,29 @@ function select_all($table)
     return $return;
 }
 
+function select_all_with_specify_character($table, $field)
+{
+    try {
+        $db = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";port=" . DB_PORT, DB_USER, DB_PASS);
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $db->exec("SET NAMES 'utf8'");
+    } catch (Exception $e) {
+        // if unable to connect to the database
+        echo "Could not connect to the database";
+        exit;
+    }
+    try {
+        $result = $db->query("SELECT * FROM {$table} WHERE {$field} LIKE '%s' ORDER BY id DESC");
+    } catch (Exception $e) {
+        echo "could not retrive data, something went wrong ($table) ";
+        exit;
+    }
+    //pass the query into the product variable
+    $return = $result->fetchAll(PDO::FETCH_ASSOC);
+
+    return $return;
+}
+
 // To fetch existing user
 function selectExistUser($table, $field, $params)
 {
@@ -159,6 +182,31 @@ function select_all_value($table, $field, $where, $params)
     }
     try {
         $result = $db->prepare("SELECT {$field} FROM {$table} WHERE {$where} = ?");
+        $result->bindParam(1, $params);
+        $result->execute();
+    } catch (Exception $e) {
+        echo "could not retrive data, something went wrong ($table) ";
+        exit;
+    }
+    //pass the query into the product variable
+    $return = $result->fetchAll(PDO::FETCH_ASSOC);
+
+    return $return;
+}
+
+function select_users_above_50($table, $field, $where, $signs, $params)
+{
+    try {
+        $db = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";port=" . DB_PORT, DB_USER, DB_PASS);
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $db->exec("SET NAMES 'utf8'");
+    } catch (Exception $e) {
+        // if unable to connect to the database
+        echo "Could not connect to the database";
+        exit;
+    }
+    try {
+        $result = $db->prepare("SELECT {$field} FROM {$table} WHERE {$where} {$signs} ?");
         $result->bindParam(1, $params);
         $result->execute();
     } catch (Exception $e) {

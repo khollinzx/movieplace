@@ -20,7 +20,7 @@ $GLOBALS['config'] = array(
 		'token_name' => 'token'
 	)
 );
-
+// mysql://b09f6baae6f952:ff5ce132@us-cdbr-east-02.cleardb.com/heroku_8e1120d4e3c442c?reconnect=true
 
 spl_autoload_register(function ($class) {
 	require_once(ROOT_PATH . 'classes/' . $class . '.php');
